@@ -32,8 +32,6 @@ export async function upsertShipmentsFromApi(): Promise<number> {
   let payload: MockShipmentApi[] = MOCK_SHIPMENTS;
 
   try {
-    // Example endpoint if you run a mock-json-server locally.
-    // You can change this in one place later.
     const res = await axios.get<MockShipmentApi[]>(
       'http://10.0.2.2:3000/shipments',
       {
