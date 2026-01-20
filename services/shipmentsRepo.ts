@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { and, desc, eq, like } from 'drizzle-orm';
 
-import { db } from '../db';
+import { db, sqlite } from '../db';
 import { shipments, type ShipmentInsert, type ShipmentRow } from '../db/schema';
 import { MOCK_SHIPMENTS, type MockShipmentApi } from './mockShipments';
 
@@ -27,8 +27,6 @@ function mapApiToInsert(item: MockShipmentApi): ShipmentInsert {
 }
 
 export async function upsertShipmentsFromApi(): Promise<number> {
-  // In the challenge, the API should be mocked. We still keep a network call here,
-  // but always fall back to the injected dataset.
   let payload: MockShipmentApi[] = MOCK_SHIPMENTS;
 
   try {
@@ -67,6 +65,18 @@ export async function upsertShipmentsFromApi(): Promise<number> {
           updatedAt: row.updatedAt,
         },
       });
+  }
+
+  return rows.length;
+}
+
+export async function resetShipmentsFromMock(): Promise<number> {
+  // Full reset so previously soft-deleted rows come back.
+  await sqlite.execAsync('DELETE FROM shipments;');
+
+  const rows = MOCK_SHIPMENTS.map(mapApiToInsert);
+  for (const row of rows) {
+    await db.insert(shipments).values(row);
   }
 
   return rows.length;

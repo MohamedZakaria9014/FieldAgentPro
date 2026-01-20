@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Animated,
+  ImageBackground,
   Modal,
   Pressable,
   StyleSheet,
@@ -16,10 +17,16 @@ import { useAppTheme } from '../theme/useAppTheme';
 import { callPhone } from '../utilis/phone';
 import { openMapsDirections } from '../utilis/maps';
 
+// Local decorative background for the map preview card (no network requests).
+// Place the file at: assets/map-preview-bg.png
+const MAP_PREVIEW_BG = require('../assets/map-preview-bg.png');
+
+// Pads a number to two digits with leading zero if necessary.
 function pad2(n: number): string {
   return String(n).padStart(2, '0');
 }
 
+// Formats an ISO date string into a user-friendly time format.
 function formatTime(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
@@ -31,12 +38,14 @@ function formatTime(iso: string): string {
   return `${hours12}:${pad2(minutes)} ${ampm}`;
 }
 
+// Returns a user-friendly label for the shipment status.
 function statusLabel(status: string): string {
   if (status === 'Completed') return 'Completed';
   if (status === 'Break') return 'Break';
   return 'Expected';
 }
 
+// Splits an address into two lines for better display.
 function splitAddress(address: string): { line1: string; line2?: string } {
   const trimmed = String(address ?? '').trim();
   if (!trimmed) return { line1: '-' };
@@ -47,6 +56,8 @@ function splitAddress(address: string): { line1: string; line2?: string } {
     const line2 = rest.join(bullet).trim();
     return { line1, line2: line2 || undefined };
   }
+
+  // Fallback: split on first comma
   const parts = trimmed.split(',');
   if (parts.length >= 2) {
     return { line1: parts[0]!.trim(), line2: parts.slice(1).join(',').trim() };
@@ -60,6 +71,7 @@ type Props = {
   onClose: () => void;
 };
 
+// ShipmentDetailsSheet component displays detailed information about a shipment in a modal sheet.
 export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
   const { t } = useTranslation();
   const theme = useAppTheme();
@@ -147,41 +159,66 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                 </Pressable>
               </View>
 
-              <View
+              <Pressable
                 style={[
                   styles.mapCard,
-                  { backgroundColor: theme.colors.surface2 },
+                  {
+                    backgroundColor: theme.colors.surface2,
+                    opacity: canNavigate ? 1 : 0.6,
+                  },
                 ]}
+                onPress={() => {
+                  if (!canNavigate) return;
+                  openMapsDirections(
+                    shipment.latitude,
+                    shipment.longitude,
+                    shipment.deliveryAddress,
+                  );
+                }}
+                disabled={!canNavigate}
+                accessibilityRole="button"
+                accessibilityLabel="map-preview"
               >
-                <View style={styles.mapCenter}>
-                  <Icon
-                    name="map-marker"
-                    size={28}
-                    color={theme.colors.primary}
-                  />
-                </View>
-                <Pressable
-                  style={[
-                    styles.mapFab,
-                    { backgroundColor: theme.colors.surface },
-                  ]}
-                  onPress={() => {
-                    if (!canNavigate) return;
-                    openMapsDirections(
-                      shipment.latitude,
-                      shipment.longitude,
-                      shipment.deliveryAddress,
-                    );
-                  }}
-                  accessibilityLabel="open-map"
+                <ImageBackground
+                  source={MAP_PREVIEW_BG}
+                  style={styles.mapBg}
+                  imageStyle={styles.mapBgImage}
+                  resizeMode="cover"
                 >
-                  <Icon
-                    name="crosshairs-gps"
-                    size={18}
-                    color={theme.colors.text}
-                  />
-                </Pressable>
-              </View>
+                  <View style={styles.mapBgScrim} />
+
+                  <View style={styles.mapPlaceholder} pointerEvents="none">
+                    <Icon
+                      name="map-marker"
+                      size={34}
+                      color={
+                        canNavigate
+                          ? theme.colors.primary
+                          : theme.colors.textMuted
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.mapPlaceholderTitle,
+                        { color: theme.colors.text },
+                      ]}
+                    >
+                      Open in Maps
+                    </Text>
+                    <Text
+                      style={[
+                        styles.mapPlaceholderSub,
+                        { color: theme.colors.textMuted },
+                      ]}
+                      numberOfLines={2}
+                    >
+                      {canNavigate
+                        ? shipment.deliveryAddress
+                        : 'No location for this task'}
+                    </Text>
+                  </View>
+                </ImageBackground>
+              </Pressable>
 
               {(() => {
                 const addr = splitAddress(shipment.deliveryAddress);
@@ -420,20 +457,35 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 12,
     justifyContent: 'center',
+    paddingHorizontal: 0,
   },
-  mapCenter: {
-    alignItems: 'center',
+  mapBg: {
+    flex: 1,
     justifyContent: 'center',
   },
-  mapFab: {
-    position: 'absolute',
-    right: 12,
-    bottom: 12,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+  mapBgImage: {
+    width: '100%',
+    height: '100%',
+  },
+  mapBgScrim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+  },
+  mapPlaceholder: {
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+  },
+  mapPlaceholderTitle: {
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  mapPlaceholderSub: {
+    fontSize: 11,
+    fontWeight: '700',
+    textAlign: 'center',
+    lineHeight: 15,
   },
   addressCard: {
     borderRadius: 18,

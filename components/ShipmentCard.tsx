@@ -23,7 +23,13 @@ export function ShipmentCard({ item, onPress }: Props) {
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.card, { backgroundColor: theme.colors.surface }]}
+      style={[
+        styles.card,
+        {
+          backgroundColor: theme.colors.surface,
+          borderColor: theme.colors.border,
+        },
+      ]}
     >
       <View style={styles.top}>
         <Text
@@ -64,30 +70,29 @@ export function ShipmentCard({ item, onPress }: Props) {
         </Text>
       </View>
 
-      <Icon
-        name="chevron-right"
-        size={18}
-        color={theme.colors.textMuted}
-        style={styles.chevron}
-      />
+      <View style={styles.chevronWrap} pointerEvents="none">
+        <Icon name="chevron-right" size={18} color={theme.colors.textMuted} />
+      </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 18,
-    padding: 14,
+    borderRadius: 20,
+    padding: 16,
+    borderWidth: 1,
     overflow: 'hidden',
+    elevation: 1,
   },
   top: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   title: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '800',
     flex: 1,
     marginRight: 10,
@@ -112,9 +117,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     flex: 1,
   },
-  chevron: {
+  chevronWrap: {
     position: 'absolute',
-    right: 10,
-    top: 14,
+    right: 12,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
   },
 });

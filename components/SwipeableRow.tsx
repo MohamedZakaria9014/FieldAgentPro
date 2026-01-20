@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -17,30 +16,34 @@ type Props = {
   height?: number;
 };
 
-const DELETE_THRESHOLD = -90;
+const ACTION_WIDTH = 96;
+const OPEN_THRESHOLD = -60;
 
-export function SwipeableRow({ children, onDelete, height = 92 }: Props) {
+export function SwipeableRow({ children, onDelete, height }: Props) {
   const theme = useAppTheme();
   const translateX = useSharedValue(0);
+  const startX = useSharedValue(0);
 
   const pan = Gesture.Pan()
     // Require intentional horizontal movement so taps still work.
-    .minDistance(10)
-    .activeOffsetX([-10, 10])
+    .minDistance(12)
+    .activeOffsetX([-15, 15])
+    // Let vertical scroll win (prevents FlatList from feeling "stuck")
+    .failOffsetY([-10, 10])
+    .onBegin(() => {
+      startX.value = translateX.value;
+    })
     .onUpdate(e => {
       // Worklet (UI thread)
-      translateX.value = Math.min(
-        0,
-        Math.max(DELETE_THRESHOLD * 1.4, e.translationX),
-      );
+      const next = startX.value + e.translationX;
+      translateX.value = Math.min(0, Math.max(-ACTION_WIDTH, next));
     })
     .onEnd(() => {
-      if (translateX.value <= DELETE_THRESHOLD) {
-        translateX.value = withSpring(-140, { damping: 18, stiffness: 220 });
-        runOnJS(onDelete)();
-      } else {
-        translateX.value = withSpring(0, { damping: 18, stiffness: 220 });
-      }
+      const shouldOpen = translateX.value <= OPEN_THRESHOLD;
+      translateX.value = withSpring(shouldOpen ? -ACTION_WIDTH : 0, {
+        damping: 18,
+        stiffness: 220,
+      });
     });
 
   const rStyle = useAnimatedStyle(() => ({
@@ -48,11 +51,19 @@ export function SwipeableRow({ children, onDelete, height = 92 }: Props) {
   }));
 
   return (
-    <View style={[styles.wrapper, { height }]} pointerEvents="box-none">
-      <View style={[styles.underlay, { backgroundColor: theme.colors.danger }]}>
-        <Icon name="trash-can" size={18} color="#fff" />
+    <View style={[styles.wrapper, height ? { height } : undefined]}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="delete-row"
+        onPress={() => {
+          translateX.value = withSpring(0, { damping: 18, stiffness: 220 });
+          onDelete();
+        }}
+        style={[styles.underlay, { backgroundColor: theme.colors.danger }]}
+      >
+        <Icon name="trash-can" size={23} color="#fff" />
         <Text style={styles.deleteText}>DELETE</Text>
-      </View>
+      </Pressable>
 
       <GestureDetector gesture={pan}>
         <Animated.View style={rStyle}>{children}</Animated.View>
@@ -64,16 +75,17 @@ export function SwipeableRow({ children, onDelete, height = 92 }: Props) {
 const styles = StyleSheet.create({
   wrapper: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 14,
     justifyContent: 'center',
+    minHeight: 86,
   },
   underlay: {
     position: 'absolute',
     right: 0,
     top: 0,
     bottom: 0,
-    width: 96,
-    borderRadius: 18,
+    width: ACTION_WIDTH,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,

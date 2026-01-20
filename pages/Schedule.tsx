@@ -122,13 +122,6 @@ export default function Schedule() {
         <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
           {t('schedule')}
         </Text>
-
-        {__DEV__ ? (
-          <Text style={{ color: theme.colors.textMuted, fontWeight: '700' }}>
-            Debug: selected #{selectedShipment?.orderId ?? '—'} | sheetIndex{' '}
-            {detailsVisible ? 0 : -1}
-          </Text>
-        ) : null}
       </View>
 
       <View

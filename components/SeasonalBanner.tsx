@@ -36,13 +36,14 @@ export function SeasonalBanner({ visible }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 14,
+    borderRadius: 18,
     paddingHorizontal: 14,
     paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 12,
+    elevation: 1,
   },
   left: {
     flexDirection: 'row',

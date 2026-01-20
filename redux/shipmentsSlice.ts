@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { initDb } from '../db/init';
 import {
   listShipments,
+  resetShipmentsFromMock,
   softDeleteShipment,
   type Shipment,
   upsertShipmentsFromApi,
@@ -38,6 +39,16 @@ export const refreshShipmentsFromDb = createAsyncThunk(
   },
 );
 
+export const resetShipmentsToMock = createAsyncThunk(
+  'shipments/resetToMock',
+  async () => {
+    await initDb();
+    await resetShipmentsFromMock();
+    const rows = await listShipments();
+    return { rows, syncedAt: new Date().toISOString() };
+  },
+);
+
 export const deleteShipmentById = createAsyncThunk(
   'shipments/deleteShipment',
   async (orderId: number) => {
@@ -67,6 +78,19 @@ const shipmentsSlice = createSlice({
         state.lastSyncAt = action.payload.syncedAt;
       })
       .addCase(bootstrapAndSyncShipments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(resetShipmentsToMock.pending, state => {
+        state.loading = true;
+        state.error = undefined;
+      })
+      .addCase(resetShipmentsToMock.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload.rows;
+        state.lastSyncAt = action.payload.syncedAt;
+      })
+      .addCase(resetShipmentsToMock.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
