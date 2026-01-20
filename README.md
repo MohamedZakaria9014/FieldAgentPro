@@ -1,5 +1,49 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+# FieldAgent Pro (Offline-First Core)
+
+Core module implementation for the “FieldAgent Pro” offline-first challenge:
+
+- Local DB: SQLite via `expo-sqlite` + `drizzle-orm`
+- State: Redux Toolkit
+- Tabs: Assignments / Schedule / Settings
+- Animations/gestures: Reanimated + Gesture Handler
+- Details: Bottom sheet (@gorhom/bottom-sheet)
+- Background (Android): WorkManager worker + notification
+
+## Offline-First Strategy
+
+The UI never renders directly from the API response.
+
+1. Fetch remote JSON (or fall back to the injected dataset).
+2. Upsert into SQLite (`shipments` table).
+3. Query SQLite and render from DB-backed state.
+
+DB initialization happens on app launch.
+
+## Mock API (optional)
+
+The app will work without any server (it injects the dataset if offline).
+
+If you want to run a mock server, expose a GET endpoint:
+
+- `GET http://10.0.2.2:3000/shipments` (Android emulator)
+
+## Background Route Sync (Android)
+
+The custom native module schedules a WorkManager job that queries the local SQLite DB for active shipments and posts a notification with their names.
+
+- Schedule: every 60 minutes
+- Manual trigger: Settings → “Manual Sync”
+
+## Tests
+
+Run unit tests:
+
+```sh
+yarn test
+```
+
 # Getting Started
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.

@@ -1,0 +1,124 @@
+export type MockShipmentApi = {
+  order_id: number;
+  status: 'Active' | 'Pending' | 'Completed' | 'Break' | string;
+  customer_name: string;
+  client_company: string;
+  delivery_address: string;
+  contact_phone?: string;
+  delivery_date: string;
+  end_time?: string;
+  task_type: string;
+  location_coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  notes: string;
+};
+
+export const MOCK_SHIPMENTS: MockShipmentApi[] = [
+  {
+    order_id: 2049,
+    status: 'Active',
+    customer_name: 'John Doe',
+    client_company: 'Acme Logistics Co.',
+    delivery_address: '452 Willow Creek, Suite 101',
+    delivery_date: '2026-01-20T10:45:00.000Z',
+    task_type: 'Delivery',
+    location_coordinates: { latitude: 37.78825, longitude: -122.4324 },
+    notes: 'Gate code: 4492. Leave at front desk.',
+  },
+  {
+    order_id: 2033,
+    status: 'Pending',
+    customer_name: 'Mike Ross',
+    client_company: 'Pearson Specter Inc.',
+    delivery_address: '880 Third Avenue, New York, NY',
+    delivery_date: '2026-01-21T14:00:00.000Z',
+    task_type: 'Pickup',
+    location_coordinates: { latitude: 40.758, longitude: -73.9855 },
+    notes: 'Fragile content. Handle with care.',
+  },
+  {
+    order_id: 2050,
+    status: 'Active',
+    customer_name: 'Jane Smith',
+    client_company: 'Global Freight',
+    delivery_address: '90210 Beverly Hills, CA',
+    contact_phone: '1-310-555-0021',
+    delivery_date: '2026-01-20T16:30:00.000Z',
+    task_type: 'Delivery',
+    location_coordinates: { latitude: 34.0736, longitude: -118.4004 },
+    notes: '',
+  },
+  {
+    order_id: 2051,
+    status: 'Active',
+    customer_name: 'Sarah Connor',
+    client_company: 'Urban Delivery Partners',
+    delivery_address: '720 Tech Plaza, Silicon Valley',
+    delivery_date: '2026-01-22T09:15:00.000Z',
+    task_type: 'Delivery',
+    location_coordinates: { latitude: 37.3382, longitude: -121.8863 },
+    notes: 'Call upon arrival.',
+  },
+  {
+    order_id: 99281,
+    status: 'Pending',
+    customer_name: 'John Doe',
+    client_company: 'Logistics Way Warehouse',
+    delivery_address: '123 Logistics Way, Warehouse 4 • Dock 2B',
+    delivery_date: '2026-01-20T10:45:00.000Z',
+    task_type: 'Navigation',
+    location_coordinates: { latitude: 25.2048, longitude: 55.2708 },
+    notes:
+      'Specific detail from Screenshot 2. Recipient expects package by noon.',
+  },
+  {
+    order_id: 4092,
+    status: 'Completed',
+    customer_name: 'Warehouse Manager',
+    client_company: 'North District Hub',
+    delivery_address: 'Warehouse A, North District',
+    delivery_date: '2026-01-20T09:00:00.000Z',
+    end_time: '2026-01-20T10:30:00.000Z',
+    task_type: 'Delivery',
+    location_coordinates: { latitude: 40.7128, longitude: -74.006 },
+    notes: 'Data from Screenshot 3 (Agenda)',
+  },
+  {
+    order_id: 4093,
+    status: 'Pending',
+    customer_name: 'Tech Park Reception',
+    client_company: 'Client B Corp',
+    delivery_address: '123 Industrial Blvd, Tech Park',
+    delivery_date: '2026-01-20T11:00:00.000Z',
+    end_time: '2026-01-20T12:00:00.000Z',
+    task_type: 'Pickup',
+    location_coordinates: { latitude: 40.7306, longitude: -73.9352 },
+    notes: 'Data from Screenshot 3 (Agenda)',
+  },
+  {
+    order_id: 9999,
+    status: 'Break',
+    customer_name: 'System',
+    client_company: 'Personal',
+    delivery_address: 'N/A',
+    delivery_date: '2026-01-20T13:00:00.000Z',
+    end_time: '2026-01-20T13:30:00.000Z',
+    task_type: 'Break',
+    location_coordinates: { latitude: 0, longitude: 0 },
+    notes: 'Lunch Break',
+  },
+  {
+    order_id: 4095,
+    status: 'Pending',
+    customer_name: 'HQ Admin',
+    client_company: 'Internal Meeting',
+    delivery_address: 'HQ - Meeting Room 3',
+    delivery_date: '2026-01-20T14:00:00.000Z',
+    end_time: '2026-01-20T16:00:00.000Z',
+    task_type: 'Meeting',
+    location_coordinates: { latitude: 0, longitude: 0 },
+    notes: 'Route Optimization Review',
+  },
+];
