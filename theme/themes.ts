@@ -13,6 +13,7 @@ export type AppTheme = {
     border: string;
     pill: string;
     tabBar: string;
+    arrow: string;
   };
 };
 
@@ -29,6 +30,7 @@ export const darkTheme: AppTheme = {
     border: '#233241',
     pill: 'rgba(33, 150, 243, 0.15)',
     tabBar: '#121B22',
+    arrow: '#EAF2FF',
   },
 };
 
@@ -45,5 +47,6 @@ export const lightTheme: AppTheme = {
     border: '#E2E8F0',
     pill: 'rgba(30, 136, 229, 0.12)',
     tabBar: '#FFFFFF',
+    arrow: '#0F1720',
   },
 };

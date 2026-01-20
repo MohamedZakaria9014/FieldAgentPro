@@ -11,16 +11,12 @@ export async function scheduleRouteSync() {
   if (Platform.OS !== 'android') return;
   try {
     await RouteSync.schedulePeriodic?.();
-  } catch {
-    // native module not installed yet
-  }
+  } catch {}
 }
 
 export async function runRouteSyncNow() {
   if (Platform.OS !== 'android') return;
   try {
     await RouteSync.runOnceNow?.();
-  } catch {
-    // native module not installed yet
-  }
+  } catch {}
 }

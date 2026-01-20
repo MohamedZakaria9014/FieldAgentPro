@@ -143,6 +143,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
             <View style={styles.content} />
           ) : (
             <View style={styles.content}>
+              {/* Sheet Header */}
               <View style={styles.sheetHeader}>
                 <Text style={[styles.sheetTitle, { color: theme.colors.text }]}>
                   Task Details
@@ -187,6 +188,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                 >
                   <View style={styles.mapBgScrim} />
 
+                  {/* Map placeholder */}
                   <View style={styles.mapPlaceholder} pointerEvents="none">
                     <Icon
                       name="map-marker"
@@ -200,7 +202,11 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                     <Text
                       style={[
                         styles.mapPlaceholderTitle,
-                        { color: theme.colors.text },
+                        {
+                          color: !shipment.deliveryAddress
+                            ? theme.colors.textMuted
+                            : '#fff',
+                        },
                       ]}
                     >
                       Open in Maps
@@ -208,7 +214,11 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                     <Text
                       style={[
                         styles.mapPlaceholderSub,
-                        { color: theme.colors.textMuted },
+                        {
+                          color: !shipment.deliveryAddress
+                            ? theme.colors.textMuted
+                            : '#fff',
+                        },
                       ]}
                       numberOfLines={2}
                     >
@@ -328,12 +338,14 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                 ) : null}
               </View>
 
+              {/* Person row */}
               <View
                 style={[
                   styles.personRow,
                   { borderTopColor: theme.colors.border },
                 ]}
               >
+                {/* Avatar section */}
                 <View
                   style={[
                     styles.avatar,
@@ -347,6 +359,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                   />
                 </View>
 
+                {/* Middle section with customer name and order ID */}
                 <View style={styles.personMid}>
                   <Text
                     style={[styles.personName, { color: theme.colors.text }]}
@@ -469,7 +482,7 @@ const styles = StyleSheet.create({
   },
   mapBgScrim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.22)',
+    backgroundColor: 'rgba(0,0,0,0.45)',
   },
   mapPlaceholder: {
     alignItems: 'center',
@@ -482,7 +495,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   mapPlaceholderSub: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     textAlign: 'center',
     lineHeight: 15,

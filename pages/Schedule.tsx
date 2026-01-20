@@ -116,6 +116,30 @@ export default function Schedule() {
     setDetailsVisible(true);
   };
 
+  const calendarTheme = React.useMemo(
+    () => ({
+      backgroundColor: theme.colors.surface,
+      calendarBackground: theme.colors.surface,
+      dayTextColor: theme.colors.text,
+      monthTextColor: theme.colors.text,
+      textDisabledColor: theme.colors.textMuted,
+      todayTextColor: theme.colors.primary,
+      textSectionTitleColor: theme.colors.textMuted,
+      textMonthFontWeight: '900' as const,
+      textMonthFontSize: 14,
+      textDayFontWeight: '700' as const,
+      textDayHeaderFontWeight: '800' as const,
+      textDayFontSize: 12,
+      textDayHeaderFontSize: 11,
+    }),
+    [
+      theme.colors.primary,
+      theme.colors.surface,
+      theme.colors.text,
+      theme.colors.textMuted,
+    ],
+  );
+
   return (
     <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
       <View style={styles.header}>
@@ -128,6 +152,7 @@ export default function Schedule() {
         style={[styles.calendarWrap, { backgroundColor: theme.colors.surface }]}
       >
         <Calendar
+          key={`calendar-${theme.mode}`}
           current={selected}
           monthFormat={'MMMM yyyy'}
           markingType="multi-dot"
@@ -138,24 +163,10 @@ export default function Schedule() {
             <Icon
               name={direction === 'left' ? 'chevron-left' : 'chevron-right'}
               size={20}
-              color={theme.colors.text}
+              color={theme.colors.arrow}
             />
           )}
-          theme={{
-            backgroundColor: theme.colors.surface,
-            calendarBackground: theme.colors.surface,
-            dayTextColor: theme.colors.text,
-            monthTextColor: theme.colors.text,
-            textDisabledColor: theme.colors.textMuted,
-            todayTextColor: theme.colors.primary,
-            textSectionTitleColor: theme.colors.textMuted,
-            textMonthFontWeight: '900',
-            textMonthFontSize: 14,
-            textDayFontWeight: '700',
-            textDayHeaderFontWeight: '800',
-            textDayFontSize: 12,
-            textDayHeaderFontSize: 11,
-          }}
+          theme={calendarTheme}
         />
       </View>
 
