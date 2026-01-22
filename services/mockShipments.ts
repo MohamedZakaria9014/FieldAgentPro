@@ -1,3 +1,4 @@
+// Type definition for a mock shipment object.
 export type MockShipmentApi = {
   order_id: number;
   status: 'Active' | 'Pending' | 'Completed' | 'Break' | string;
@@ -15,6 +16,7 @@ export type MockShipmentApi = {
   notes: string;
 };
 
+// Mock shipment dataset for testing and development.
 export const MOCK_SHIPMENTS: MockShipmentApi[] = [
   {
     order_id: 2049,

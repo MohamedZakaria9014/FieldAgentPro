@@ -19,5 +19,14 @@ export const shipments = sqliteTable('shipments', {
   updatedAt: text('updated_at').notNull(),
 });
 
+export const shipmentsOutbox = sqliteTable('shipments_outbox', {
+  id: integer('id').primaryKey({ autoIncrement: true }).notNull(),
+  opType: text('op_type').notNull(),
+  orderId: integer('order_id').notNull(),
+  createdAt: text('created_at').notNull(),
+});
+
 export type ShipmentRow = typeof shipments.$inferSelect;
 export type ShipmentInsert = typeof shipments.$inferInsert;
+
+export type ShipmentsOutboxRow = typeof shipmentsOutbox.$inferSelect;
