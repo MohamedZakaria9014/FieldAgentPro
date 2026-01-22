@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import type { Shipment } from '../services/shipmentsRepo';
@@ -69,8 +70,17 @@ export function ScheduleTaskCard({
   onPressNavigate,
   onPressCall,
 }: Props) {
+  const { t } = useTranslation();
   const theme = useAppTheme();
   const s = statusStyles(item.status);
+
+  const statusText = React.useMemo(() => {
+    if (item.status === 'Completed') return t('completed');
+    if (item.status === 'Active') return t('active');
+    if (item.status === 'Pending') return t('pending');
+    if (item.status === 'Break') return t('break');
+    return String(item.status);
+  }, [item.status, t]);
 
   const start = formatTime(item.deliveryDate);
   const end = item.endTime ? formatTime(item.endTime) : undefined;
@@ -79,7 +89,7 @@ export function ScheduleTaskCard({
 
   const title =
     item.taskType === 'Break'
-      ? item.notes?.trim() || 'Break'
+      ? item.notes?.trim() || t('break')
       : `${item.taskType} #${item.orderId}`;
 
   const showCompany =
@@ -102,7 +112,7 @@ export function ScheduleTaskCard({
       <View style={styles.topRow}>
         <View style={[styles.pill, { backgroundColor: s.pillBg }]}>
           <Text style={[styles.pillText, { color: s.pillText }]}>
-            {String(item.status).toUpperCase()}
+            {statusText}
           </Text>
         </View>
 
@@ -152,7 +162,7 @@ export function ScheduleTaskCard({
           style={[styles.btn, { backgroundColor: theme.colors.surface2 }]}
         >
           <Text style={[styles.btnText, { color: theme.colors.text }]}>
-            View Details
+            {t('viewDetails')}
           </Text>
         </Pressable>
 
@@ -161,7 +171,9 @@ export function ScheduleTaskCard({
             onPress={onPressNavigate}
             style={[styles.btn, { backgroundColor: theme.colors.primary }]}
           >
-            <Text style={[styles.btnText, { color: '#fff' }]}>Navigate</Text>
+            <Text style={[styles.btnText, { color: '#fff' }]}>
+              {t('navigate')}
+            </Text>
           </Pressable>
         ) : null}
 
@@ -207,6 +219,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '900',
     letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   time: {
     fontSize: 11,

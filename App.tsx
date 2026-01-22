@@ -15,7 +15,7 @@ import { bootstrapAndSyncShipments } from './redux/shipmentsSlice';
 import { loadSettings } from './redux/settingsSlice';
 
 enableScreens();
-initI18n('en');
+initI18n();
 
 function AppBootstrap() {
   const dispatch = useAppDispatch();

@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import type { Shipment } from '../services/shipmentsRepo';
 import { useAppTheme } from '../theme/useAppTheme';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   item: Shipment;
@@ -12,6 +13,8 @@ type Props = {
 
 export function ShipmentCard({ item, onPress }: Props) {
   const theme = useAppTheme();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.dir() === 'rtl';
 
   const pill =
     item.status === 'Active'
@@ -36,7 +39,7 @@ export function ShipmentCard({ item, onPress }: Props) {
           style={[styles.title, { color: theme.colors.text }]}
           numberOfLines={1}
         >
-          Task #{item.orderId}
+          {t('task')} #{item.orderId}
         </Text>
         <View
           style={[styles.badge, { backgroundColor: pill.bg }]}
@@ -46,7 +49,7 @@ export function ShipmentCard({ item, onPress }: Props) {
             style={[styles.badgeText, { color: pill.text }]}
             numberOfLines={1}
           >
-            {item.status}
+            {t(item.status.toLowerCase())}
           </Text>
         </View>
       </View>
@@ -71,7 +74,11 @@ export function ShipmentCard({ item, onPress }: Props) {
       </View>
 
       <View style={styles.chevronWrap} pointerEvents="none">
-        <Icon name="chevron-right" size={18} color={theme.colors.textMuted} />
+        <Icon
+          name={isRTL ? 'chevron-left' : 'chevron-right'}
+          size={18}
+          color={theme.colors.textMuted}
+        />
       </View>
     </Pressable>
   );

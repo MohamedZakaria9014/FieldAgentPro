@@ -13,12 +13,14 @@ import { MOCK_SHIPMENTS, type MockShipmentApi } from './mockShipments';
 
 export type Shipment = ShipmentRow;
 
+// Base URL for the remote JSON Server API.
 const API_BASE_URL = Platform.select({
   android: 'http://10.0.2.2:3000',
   ios: 'http://localhost:3000',
   default: 'http://localhost:3000',
 });
 
+// Map API payload to DB insert type.
 function mapApiToInsert(item: MockShipmentApi): ShipmentInsert {
   return {
     orderId: item.order_id,
@@ -197,6 +199,7 @@ async function applyServerSnapshotToLocal(
   return rows.length;
 }
 
+// List shipments for a specific date (YYYY-MM-DD), ordered by delivery date descending.
 export async function listShipmentsForDate(
   dateYYYYMMDD: string,
 ): Promise<Shipment[]> {

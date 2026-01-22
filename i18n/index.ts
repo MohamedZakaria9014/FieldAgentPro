@@ -6,6 +6,7 @@ export const resources = {
   en: {
     translation: {
       assignments: 'Assignments',
+      myAssignments: 'My Assignments',
       schedule: 'Schedule',
       settings: 'Settings',
       seasonalRush: 'Seasonal Rush',
@@ -25,11 +26,36 @@ export const resources = {
       manualSync: 'Manual Sync',
       arabic: 'Arabic',
       english: 'English',
+      task: 'Task',
+
+      seasonalBanner: 'Seasonal Banner',
+      on: 'On',
+      off: 'Off',
+
+      resetToMockTitle: 'Reset to mock data?',
+      resetToMockMessage:
+        'This will restore all mock shipments (including ones you deleted).',
+      cancel: 'Cancel',
+      reset: 'Reset',
+
+      agendaFor: 'Agenda for {{date}}',
+      addTask: 'Add Task',
+      comingSoon: 'Coming soon.',
+      noTasksForDate: 'No tasks for this date.',
+
+      taskDetails: 'Task Details',
+      openInMaps: 'Open in Maps',
+      noLocationForTask: 'No location for this task',
+      expected: 'Expected',
+      break: 'Break',
+      viewDetails: 'View Details',
+      call: 'Call',
     },
   },
   ar: {
     translation: {
       assignments: 'المهام',
+      myAssignments: 'مهامي',
       schedule: 'الجدول',
       settings: 'الإعدادات',
       seasonalRush: 'ذروة موسمية',
@@ -49,11 +75,35 @@ export const resources = {
       manualSync: 'مزامنة يدوية',
       arabic: 'العربية',
       english: 'الإنجليزية',
+      task: 'مهمة',
+
+      seasonalBanner: 'لافتة موسمية',
+      on: 'تشغيل',
+      off: 'إيقاف',
+
+      resetToMockTitle: 'إعادة التعيين إلى بيانات تجريبية؟',
+      resetToMockMessage:
+        'سيؤدي هذا إلى استعادة جميع الشحنات التجريبية (بما في ذلك التي حذفتها).',
+      cancel: 'إلغاء',
+      reset: 'إعادة تعيين',
+
+      agendaFor: 'جدول أعمال {{date}}',
+      addTask: 'إضافة مهمة',
+      comingSoon: 'قريباً.',
+      noTasksForDate: 'لا توجد مهام لهذا التاريخ.',
+
+      taskDetails: 'تفاصيل المهمة',
+      openInMaps: 'افتح في الخرائط',
+      noLocationForTask: 'لا يوجد موقع لهذه المهمة',
+      expected: 'متوقع',
+      break: 'استراحة',
+      viewDetails: 'عرض التفاصيل',
+      call: 'اتصال',
     },
   },
 } as const;
 
-export function initI18n(defaultLng: 'en' | 'ar' = 'en') {
+export function initI18n(defaultLng?: 'en' | 'ar') {
   const locales = RNLocalize.getLocales();
   const deviceLng = locales[0]?.languageCode === 'ar' ? 'ar' : 'en';
 

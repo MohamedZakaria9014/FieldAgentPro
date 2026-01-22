@@ -39,10 +39,12 @@ function formatTime(iso: string): string {
 }
 
 // Returns a user-friendly label for the shipment status.
-function statusLabel(status: string): string {
-  if (status === 'Completed') return 'Completed';
-  if (status === 'Break') return 'Break';
-  return 'Expected';
+function statusLabel(status: string, t: (key: string) => string): string {
+  if (status === 'Completed') return t('completed');
+  if (status === 'Break') return t('break');
+  if (status === 'Active') return t('active');
+  if (status === 'Pending') return t('pending');
+  return t('expected');
 }
 
 // Splits an address into two lines for better display.
@@ -146,7 +148,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
               {/* Sheet Header */}
               <View style={styles.sheetHeader}>
                 <Text style={[styles.sheetTitle, { color: theme.colors.text }]}>
-                  Task Details
+                  {t('taskDetails')}
                 </Text>
                 <Pressable
                   onPress={onClose}
@@ -209,7 +211,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                         },
                       ]}
                     >
-                      Open in Maps
+                      {t('openInMaps')}
                     </Text>
                     <Text
                       style={[
@@ -224,7 +226,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                     >
                       {canNavigate
                         ? shipment.deliveryAddress
-                        : 'No location for this task'}
+                        : t('noLocationForTask')}
                     </Text>
                   </View>
                 </ImageBackground>
@@ -294,7 +296,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                   >
                     <Icon name="navigation" size={16} color="#fff" />
                     <Text style={[styles.pillBtnText, { color: '#fff' }]}>
-                      Navigate
+                      {t('navigate')}
                     </Text>
                   </Pressable>
                 ) : (
@@ -315,7 +317,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                         { color: theme.colors.textMuted },
                       ]}
                     >
-                      Navigate
+                      {t('navigate')}
                     </Text>
                   </View>
                 )}
@@ -332,7 +334,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                     <Text
                       style={[styles.pillBtnText, { color: theme.colors.text }]}
                     >
-                      Call
+                      {t('call')}
                     </Text>
                   </Pressable>
                 ) : null}
@@ -390,7 +392,7 @@ export function ShipmentDetailsSheet({ shipment, visible, onClose }: Props) {
                       { color: theme.colors.textMuted },
                     ]}
                   >
-                    {statusLabel(shipment.status)}
+                    {statusLabel(shipment.status, t)}
                   </Text>
                 </View>
               </View>

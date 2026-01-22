@@ -64,18 +64,14 @@ export default function Assignments() {
 
   const resetToMockData = () => {
     if (loading) return;
-    Alert.alert(
-      'Reset to mock data?',
-      'This will restore all mock shipments (including ones you deleted).',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reset',
-          style: 'destructive',
-          onPress: () => dispatch(resetShipmentsToMock()),
-        },
-      ],
-    );
+    Alert.alert(t('resetToMockTitle'), t('resetToMockMessage'), [
+      { text: t('cancel'), style: 'cancel' },
+      {
+        text: t('reset'),
+        style: 'destructive',
+        onPress: () => dispatch(resetShipmentsToMock()),
+      },
+    ]);
   };
 
   return (
@@ -96,7 +92,7 @@ export default function Assignments() {
           style={[styles.headerTitle, { color: theme.colors.text }]}
           numberOfLines={1}
         >
-          My {t('assignments')}
+          {t('myAssignments')}
         </Text>
 
         <Pressable

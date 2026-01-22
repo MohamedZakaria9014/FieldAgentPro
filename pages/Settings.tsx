@@ -12,18 +12,12 @@ import {
 } from '../redux/settingsSlice';
 import { bootstrapAndSyncShipments } from '../redux/shipmentsSlice';
 import { useAppTheme } from '../theme/useAppTheme';
-import { runRouteSyncNow, scheduleRouteSync } from '../services/routeSync';
 
 export default function Settings() {
   const { t } = useTranslation();
   const theme = useAppTheme();
   const dispatch = useAppDispatch();
   const settings = useAppSelector(s => s.settings);
-
-  React.useEffect(() => {
-    // ensure background work is scheduled when settings screen is visited
-    scheduleRouteSync();
-  }, []);
 
   const updateSettings = (next: typeof settings) => {
     dispatch(persistSettings(next));
@@ -67,7 +61,6 @@ export default function Settings() {
 
   const manualSync = async () => {
     await dispatch(bootstrapAndSyncShipments());
-    await runRouteSyncNow();
   };
 
   return (
@@ -90,8 +83,8 @@ export default function Settings() {
           onPress={toggleTheme}
         />
         <SettingRow
-          title="Seasonal Banner"
-          value={settings.seasonalBannerEnabled ? 'On' : 'Off'}
+          title={t('seasonalBanner')}
+          value={settings.seasonalBannerEnabled ? t('on') : t('off')}
           onPress={toggleBanner}
         />
 
