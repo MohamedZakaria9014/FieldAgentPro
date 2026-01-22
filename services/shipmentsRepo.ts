@@ -38,6 +38,7 @@ function mapApiToInsert(item: MockShipmentApi): ShipmentInsert {
   };
 }
 
+// Fetch shipments from the remote API and upsert into local SQLite.
 export async function upsertShipmentsFromApi(): Promise<number> {
   try {
     // If we previously deleted while offline, try to flush those deletes first.
@@ -72,6 +73,7 @@ export async function upsertShipmentsFromApi(): Promise<number> {
   }
 }
 
+// Reset local shipments to match the mock dataset.
 export async function resetShipmentsFromMock(): Promise<number> {
   // Full reset so previously soft-deleted rows come back.
   await sqlite.execAsync('DELETE FROM shipments;');
@@ -91,6 +93,7 @@ export async function resetShipmentsFromMock(): Promise<number> {
   return rows.length;
 }
 
+// List all non-deleted shipments, ordered by delivery date descending.
 export async function listShipments(): Promise<Shipment[]> {
   return db
     .select()
@@ -99,6 +102,7 @@ export async function listShipments(): Promise<Shipment[]> {
     .orderBy(desc(shipments.deliveryDate));
 }
 
+// Soft-delete a shipment locally and queue the delete for later remote sync.
 export async function softDeleteShipment(orderId: number): Promise<void> {
   // Delete locally immediately.
   await db.delete(shipments).where(eq(shipments.orderId, orderId));
@@ -132,6 +136,7 @@ export async function softDeleteShipment(orderId: number): Promise<void> {
   }
 }
 
+// Attempt to flush any pending deletes in the outbox to the API.
 async function flushPendingDeletesToApi(): Promise<number> {
   const pending = await db
     .select({ id: shipmentsOutbox.id, orderId: shipmentsOutbox.orderId })
@@ -166,6 +171,7 @@ async function flushPendingDeletesToApi(): Promise<number> {
   return flushed;
 }
 
+// Reconcile local SQLite to match the server snapshot, excluding any pending local deletes.
 async function applyServerSnapshotToLocal(
   payload: MockShipmentApi[],
 ): Promise<number> {

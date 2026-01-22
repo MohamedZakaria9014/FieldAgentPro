@@ -1,34 +1,6 @@
 {
   "shipments": [
     {
-      "order_id": 2049,
-      "status": "Active",
-      "customer_name": "John Doe",
-      "client_company": "Acme Logistics Co.",
-      "delivery_address": "452 Willow Creek, Suite 101",
-      "delivery_date": "2026-01-20T10:45:00.000Z",
-      "task_type": "Delivery",
-      "location_coordinates": {
-        "latitude": 37.78825,
-        "longitude": -122.4324
-      },
-      "notes": "Gate code: 4492. Leave at front desk."
-    },
-    {
-      "order_id": 2033,
-      "status": "Pending",
-      "customer_name": "Mike Ross",
-      "client_company": "Pearson Specter Inc.",
-      "delivery_address": "880 Third Avenue, New York, NY",
-      "delivery_date": "2026-01-21T14:00:00.000Z",
-      "task_type": "Pickup",
-      "location_coordinates": {
-        "latitude": 40.758,
-        "longitude": -73.9855
-      },
-      "notes": "Fragile content. Handle with care."
-    },
-    {
       "order_id": 2050,
       "status": "Active",
       "customer_name": "Jane Smith",

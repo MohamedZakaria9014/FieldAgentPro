@@ -1,12 +1,8 @@
-import express from 'express';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const DB_PATH = path.join(__dirname, 'db.json');
 const SEED_PATH = path.join(__dirname, 'mockShipments.json');
@@ -49,12 +45,10 @@ app.post('/reset-shipments', (req, res) => {
     });
     console.log('🗃️ Shipments database reset to mock data');
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        ok: false,
-        error: error instanceof Error ? error.message : String(error),
-      });
+    res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 });
 
@@ -79,12 +73,10 @@ app.delete('/shipments/:id', (req, res) => {
     );
     return res.json({ ok: true, deleted });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        ok: false,
-        error: error instanceof Error ? error.message : String(error),
-      });
+    return res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 });
 
