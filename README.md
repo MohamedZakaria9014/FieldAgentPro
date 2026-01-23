@@ -1,141 +1,174 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# FieldAgent Pro
 
-# FieldAgent Pro (Offline-First Core)
+Offline-first React Native app that manages a list of "shipments" and supports:
 
-Core module implementation for the “FieldAgent Pro” offline-first challenge:
-
-- Local DB: SQLite via `expo-sqlite` + `drizzle-orm`
-- State: Redux Toolkit
+- Local persistence in SQLite (Expo SQLite) with Drizzle ORM
+- Redux Toolkit state management
 - Tabs: Assignments / Schedule / Settings
-- Animations/gestures: Reanimated + Gesture Handler
-- Details: Bottom sheet (@gorhom/bottom-sheet)
-- Background (Android): WorkManager worker + notification
+- Optional local mock API server (Express) for emulator/device testing
+- Localization (English/Arabic) with RTL support
 
-## Offline-First Strategy
+## Quick Start
 
-The UI never renders directly from the API response.
+### 1) Prerequisites
 
-1. Fetch remote JSON (or fall back to the injected dataset).
-2. Upsert into SQLite (`shipments` table).
-3. Query SQLite and render from DB-backed state.
+- Node.js `>= 20` (see `package.json` engines)
+- Android Studio + Android SDK (for Android)
+- Xcode + CocoaPods (for iOS)
+- Follow the official React Native environment setup:
+  https://reactnative.dev/docs/environment-setup
 
-DB initialization happens on app launch.
+### 2) Install dependencies
 
-## Mock API (optional)
-
-The app will work without any server (it injects the dataset if offline).
-
-If you want to run a mock server, expose a GET endpoint:
-
-- `GET http://10.0.2.2:3000/shipments` (Android emulator)
-
-## Background Route Sync (Android)
-
-The custom native module schedules a WorkManager job that queries the local SQLite DB for active shipments and posts a notification with their names.
-
-- Schedule: every 60 minutes
-- Manual trigger: Settings → “Manual Sync”
-
-## Tests
-
-Run unit tests:
+From the repo root:
 
 ```sh
-yarn test
+yarn
 ```
 
-# Getting Started
-
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
-
-## Step 1: Start Metro
-
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
+### 3) Start Metro
 
 ```sh
-# Using npm
-npm start
-
-# OR using Yarn
 yarn start
 ```
 
-## Step 2: Build and run your app
+### 4) Run the app
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
+Android:
 
 ```sh
-# Using npm
-npm run android
-
-# OR using Yarn
 yarn android
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+iOS (macOS only):
 
 ```sh
 bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
 bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
 yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## Local Mock API (optional, recommended for sync testing)
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+This repo includes a small Express server that serves and mutates shipment data.
 
-## Step 3: Modify your app
+Start it from the repo root:
 
-Now that you have successfully run the app, let's make changes!
+```sh
+yarn api
+```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+Endpoints:
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+- `GET http://localhost:3000/health`
+- `GET /shipments`
+- `DELETE /shipments/:id`
+- `POST /reset-shipments`
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+### Emulator/device URLs
 
-## Congratulations! :tada:
+- Android emulator uses your host machine as `http://10.0.2.2:3000`
+- iOS simulator can use `http://localhost:3000`
+- Real device: use your machine LAN IP, e.g. `http://192.168.1.10:3000`
 
-You've successfully run and modified your React Native App. :partying_face:
+The server implementation is in `api/json-server.js`.
+The live DB file is `api/db.json`.
+The seed dataset is `api/mockShipments.json`.
 
-### Now what?
+## How the App Works
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+### Offline-first data flow
 
-# Troubleshooting
+The UI is always driven from SQLite, not directly from API responses:
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+1. When online, the app fetches the server snapshot (`GET /shipments`).
+2. It reconciles local SQLite to match the server snapshot.
+3. Redux reads from SQLite and renders.
+4. When offline, the app keeps rendering from SQLite.
 
-# Learn More
+Core logic lives in `services/shipmentsRepo.ts`.
 
-To learn more about React Native, take a look at the following resources:
+### Deletes and offline behavior
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- Deleting a shipment removes it from SQLite immediately.
+- If the server is reachable, the app also deletes it from the API.
+- If the server is not reachable, the delete is queued (outbox) and flushed later.
+
+### Resetting shipments
+
+There are two ways data is reset (depending on where you trigger it):
+
+- Local reset: wipes the local `shipments` table and reseeds from the built-in mock dataset.
+- Best-effort API reset: when the API is reachable, the app calls `POST /reset-shipments`.
+
+UI shortcut:
+
+- On the Assignments screen, long-press the refresh button to reset to mock data.
+
+### Localization (Arabic/English)
+
+- Language toggle is in Settings.
+- Switching RTL (Arabic) may require an app restart (handled in Settings).
+- Calendar localization uses `react-native-calendars` `LocaleConfig`.
+
+Translation resources live in `i18n/index.ts`.
+
+## Useful Scripts
+
+From repo root:
+
+- `yarn start` - start Metro
+- `yarn android` - build/run Android
+- `yarn ios` - build/run iOS
+- `yarn api` - start local mock API on port 3000
+- `yarn test` - run Jest tests
+- `yarn lint` - run ESLint
+
+## Project Structure
+
+- `pages/` - screen components (Assignments/Schedule/Settings)
+- `components/` - reusable UI components
+- `redux/` - store + slices
+- `db/` - SQLite + Drizzle schema/init
+- `services/` - domain logic (shipments repo, helpers, mocks)
+- `i18n/` - translations + i18next init
+- `api/` - local mock server + JSON db
+
+## SQLite Debugging (Android)
+
+The SQLite DB is stored in the app sandbox. Options to inspect it:
+
+1. Android Studio Device Explorer (recommended)
+
+   - Find the app data directory and copy the SQLite file out for inspection.
+
+2. `adb` (debug builds)
+   - Use `run-as` to copy the DB to a readable location.
+
+If you want a "live" view, export the DB periodically and open it with a SQLite viewer.
+
+## Troubleshooting
+
+### Android can’t reach `localhost`
+
+Use `10.0.2.2` on the Android emulator instead of `localhost`.
+
+### Cleartext HTTP
+
+If you are testing `http://...` on Android and requests fail, ensure debug builds allow cleartext HTTP.
+
+### Metro/Gradle cache issues
+
+Try:
+
+```sh
+npx react-native start --reset-cache
+```
+
+And rebuild Android from a clean state:
+
+```sh
+cd android
+./gradlew clean
+cd ..
+```
