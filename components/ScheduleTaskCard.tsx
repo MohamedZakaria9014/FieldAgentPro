@@ -29,7 +29,6 @@ function formatTime(iso: string): string {
 }
 
 function statusStyles(status: string) {
-  // Matches the screenshot vibe: green = completed, blue = pending, orange = break, gray = default.
   switch (status) {
     case 'Completed':
       return {

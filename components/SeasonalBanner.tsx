@@ -11,7 +11,6 @@ type Props = {
 
 export function SeasonalBanner({ visible }: Props) {
   const { t } = useTranslation();
-  const theme = useAppTheme();
 
   if (!visible) return null;
 

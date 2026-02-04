@@ -37,9 +37,6 @@ export default function Assignments() {
   const [selected, setSelected] = React.useState<Shipment | null>(null);
   const [detailsVisible, setDetailsVisible] = React.useState(false);
 
-  // Make pull-to-refresh less sensitive:
-  // 1) only enable when we're at the top
-  // 2) require a deeper pull before we "arm" a refresh
   const [pullEnabled, setPullEnabled] = React.useState(true);
   const [refreshArmed, setRefreshArmed] = React.useState(false);
   const PULL_ARM_THRESHOLD = 80;

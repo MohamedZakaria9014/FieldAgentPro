@@ -4,7 +4,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-// Import your pages
 import Assignments from '../pages/Assignments';
 import Schedule from '../pages/Schedule';
 import Settings from '../pages/Settings';
@@ -86,7 +85,7 @@ export default function TabNavigator() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: '#121B22', // Dark navy from your screenshot
+    backgroundColor: '#121B22',
     borderTopWidth: 0,
     height: 70,
     paddingBottom: 10,

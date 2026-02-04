@@ -1,8 +1,6 @@
 import { SQLITE_DB_NAME, sqlite } from './index';
 
 export async function initDb(): Promise<void> {
-  // Minimal "migration" to guarantee the table exists at launch.
-  // (Drizzle migration tooling is typically run at build-time; for the challenge we ensure runtime init.)
   await sqlite.execAsync(`
     PRAGMA journal_mode = WAL;
 
